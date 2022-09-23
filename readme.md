@@ -1,3 +1,3 @@
-# Git and Github course
+# Glo Academy Anime intensive
 
-Crash course for Git
+Glo Academy Anime intensive
