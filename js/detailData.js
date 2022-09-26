@@ -68,8 +68,6 @@ const detailData = () => {
     }
   };
 
-  preloader.classList.add('active');
-
   fetch(
     'https://glo-academy-anime-intensive-default-rtdb.firebaseio.com/anime.json'
   )
