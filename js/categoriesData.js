@@ -1,4 +1,4 @@
-const mainData = () => {
+const categoriesData = () => {
   const preloader = document.querySelector('.preloder');
 
   const renderGenreList = (genres) => {
@@ -13,12 +13,12 @@ const mainData = () => {
   };
 
   const renderAnimeList = (array, genres) => {
-    const wrapper = document.querySelector('.product .col-lg-8');
+    const wrapper = document.querySelector('.product-page .col-lg-8');
 
     genres.forEach((genre) => {
       const productBlock = document.createElement('div');
       const listBlock = document.createElement('div');
-      const list = array.filter((item) => item.ganre === genre);
+      const list = array.filter((item) => item.tags.includes(genre));
 
       listBlock.classList.add('row');
       productBlock.classList.add('mb-5');
@@ -26,19 +26,19 @@ const mainData = () => {
       productBlock.insertAdjacentHTML(
         'beforeend',
         `
-			<div class="row">
-				<div class="col-lg-8 col-md-8 col-sm-8">
-					<div class="section-title">
-						<h4>${genre}</h4>
-					</div>
-				</div>
-				<div class="col-lg-4 col-md-4 col-sm-4">
-					<div class="btn__all">
-					<a href="/categories.html?genre=${genre}" class="primary-btn">View All <span class="arrow_right"></span></a>
-					</div>
-				</div>
-			</div>
-		`
+			  <div class="row">
+				  <div class="col-lg-8 col-md-8 col-sm-8">
+					  <div class="section-title">
+						  <h4>${genre}</h4>
+					  </div>
+				  </div>
+				  <div class="col-lg-4 col-md-4 col-sm-4">
+					  <div class="btn__all">
+					  <a href="/categories.html?genre=${genre}" class="primary-btn">View All <span class="arrow_right"></span></a>
+					  </div>
+				  </div>
+			  </div>
+		  `
       );
 
       list.forEach((item) => {
@@ -51,21 +51,21 @@ const mainData = () => {
         listBlock.insertAdjacentHTML(
           'beforeend',
           `
-				<div class="col-lg-4 col-md-6 col-sm-6">
-					<div class="product__item">
-						<div class="product__item__pic set-bg" data-setbg="${item.image}">
-							<div class="ep">${item.rating} / 10</div>
-							<div class="view"><i class="fa fa-eye"></i> ${item.views}</div>
-						</div>
-						<div class="product__item__text">
-							${tagsBlock.outerHTML}
-							<h5>
-								<a href="/anime-details.html?itemId=${item.id}">${item.title}</a>
-							</h5>
-						</div>
-					</div>
-				</div>
-			`
+				  <div class="col-lg-4 col-md-6 col-sm-6">
+					  <div class="product__item">
+						  <div class="product__item__pic set-bg" data-setbg="${item.image}">
+							  <div class="ep">${item.rating} / 10</div>
+							  <div class="view"><i class="fa fa-eye"></i> ${item.views}</div>
+						  </div>
+						  <div class="product__item__text">
+							  ${tagsBlock.outerHTML}
+							  <h5>
+								  <a href="/anime-details.html?itemId=${item.id}">${item.title}</a>
+							  </h5>
+						  </div>
+					  </div>
+				  </div>
+			  `
         );
       });
 
@@ -89,12 +89,12 @@ const mainData = () => {
       wrapper.insertAdjacentHTML(
         'beforeend',
         `
-			<div class="product__sidebar__view__item set-bg" data-setbg="${item.image}">
-				<div class="ep">${item.rating} / 10</div>
-				<div class="view"><i class="fa fa-eye"></i> ${item.views}</div>
-				<h5><a href="/anime-details.html">${item.title}</a></h5>
-	  		</div>
-			`
+			  <div class="product__sidebar__view__item set-bg" data-setbg="${item.image}">
+				  <div class="ep">${item.rating} / 10</div>
+				  <div class="view"><i class="fa fa-eye"></i> ${item.views}</div>
+				  <h5><a href="/anime-details.html">${item.title}</a></h5>
+				 </div>
+			  `
       );
     });
 
@@ -109,15 +109,26 @@ const mainData = () => {
     .then((response) => response.json())
     .then((data) => {
       const genres = new Set();
+      const genreParams = new URLSearchParams(window.location.search).get(
+        'genre'
+      );
 
       data.forEach((item) => {
         genres.add(item.ganre);
       });
 
       renderTopAnime(data.sort((a, b) => b.views - a.views).slice(0, 5));
-      renderAnimeList(data, genres);
+
+      if (genreParams) {
+        renderAnimeList(data, [genreParams]);
+        const viewAllLink = document.querySelector('.product-page .col-lg-4');
+        viewAllLink.innerHTML = '';
+      } else {
+        renderAnimeList(data, genres);
+      }
+
       renderGenreList(genres);
     });
 };
 
-mainData();
+categoriesData();
